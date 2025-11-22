@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mencare_app1/core/models/agendamento.dart';
-import 'package:mencare_app1/core/store/agendamentos_store.dart';
-import 'package:mencare_app1/features/agendamentos/presentation/create_agendamento_screen.dart';
+import '../../../core/models/agendamento.dart';
+import '../../../core/store/agendamentos_store.dart';
 
 class AgendamentosScreen extends StatelessWidget {
   const AgendamentosScreen({super.key});
@@ -21,26 +20,12 @@ class AgendamentosScreen extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            _Lista(typeFilter: null),
-            _Lista(typeFilter: AgType.consulta),
-            _Lista(typeFilter: AgType.treino),
+            _Lista(typeFilter: null),                    // todos
+            _Lista(typeFilter: AgType.consulta),         // consultas
+            _Lista(typeFilter: AgType.treino),           // treinos
           ],
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: const Icon(Icons.add),
-          label: const Text('Novo'),
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const CreateAgendamentoScreen(
-                  initialType: AgType.consulta,
-                ),
-              ),
-            );
-          },
         ),
       ),
     );
@@ -63,7 +48,9 @@ class _Lista extends StatelessWidget {
             : items.where((e) => e.type == typeFilter).toList();
 
         if (data.isEmpty) {
-          return const Center(child: Text('Nenhum agendamento ainda.'));
+          return const Center(
+            child: Text('Nenhum agendamento ainda.'),
+          );
         }
 
         return ListView.separated(
@@ -94,7 +81,7 @@ class _Lista extends StatelessWidget {
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                // espaço pra edição/detalhe
+                // espaço pra futuro detalhe/edição
               },
             );
           },

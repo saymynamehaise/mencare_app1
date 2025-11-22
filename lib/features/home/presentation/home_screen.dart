@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/card_widget.dart';
+import 'package:mencare_app1/shared/widgets/card_widget.dart';
+import 'package:mencare_app1/shared/widgets/option_card.dart';
+import 'package:mencare_app1/features/agendamentos/presentation/create_agendamento_screen.dart';
+import 'package:mencare_app1/core/models/agendamento.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const snack = SnackBar(
+      content: Text('Abrindo detalhes do treino...'),
+      behavior: SnackBarBehavior.floating,
+      duration: Duration(seconds: 2),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Olá, Adam 👋'),
@@ -30,83 +39,72 @@ class HomeScreen extends StatelessWidget {
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        // lista marcada como const
-        children: const [
-          Text(
+        children: [
+          const Text(
             'Próximo agendamento',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           CardWidget(
             title: 'Treino Funcional',
             subtitle: 'Hoje, 16:00 - Academia FitMax',
-            color: Color(0xFFB85A2F),
+            color: const Color(0xFFB85A2F),
             trailingText: '2h 15min',
             trailingColor: Colors.orangeAccent,
+            onTap: () => ScaffoldMessenger.of(context).showSnackBar(snack),
           ),
-          SizedBox(height: 20),
-          // Row const + children const
+          const SizedBox(height: 20),
           Row(
             children: [
               Expanded(
-                child: _OptionCard(
+                child: OptionCard(
                   title: 'Agendar Consulta',
                   subtitle: 'Médicos, exames e check-ups',
                   icon: Icons.local_hospital,
-                  color: Color(0xFF2F8A8A),
+                  color: const Color(0xFF2F8A8A),
+                  onTap: () async {
+                    final saved = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CreateAgendamentoScreen(
+                          initialType: AgType.consulta,
+                        ),
+                      ),
+                    );
+                    if (saved == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Consulta agendada!')),
+                      );
+                    }
+                  },
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
-                child: _OptionCard(
+                child: OptionCard(
                   title: 'Agendar Treino',
                   subtitle: 'Personal, academia e esportes',
                   icon: Icons.fitness_center,
-                  color: Color(0xFF6B8A2F),
+                  color: const Color(0xFF6B8A2F),
+                  onTap: () async {
+                    final saved = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CreateAgendamentoScreen(
+                          initialType: AgType.treino,
+                        ),
+                      ),
+                    );
+                    if (saved == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Treino agendado!')),
+                      );
+                    }
+                  },
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OptionCard extends StatelessWidget {
-  final String title, subtitle;
-  final IconData icon;
-  final Color color;
-
-  const _OptionCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.25),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            padding: const EdgeInsets.all(8),
-            child: Icon(icon, color: color, size: 24),
-          ),
-          const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-          Text(subtitle, style: const TextStyle(color: Colors.white54, fontSize: 13)),
         ],
       ),
     );
